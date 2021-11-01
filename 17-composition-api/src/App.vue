@@ -2,6 +2,7 @@
   <section class="container">
     <h2>{{ userName }}</h2>
     <h3>{{ age }}</h3>
+    <button @click.prevent="helpers.setNewAge">Change Age</button>
   </section>
 </template>
 
@@ -14,27 +15,25 @@ export default {
     /* 
       const userName = ref('nooobcoder')
       const age = ref(30)
-
-      setTimeout(() => {
-        user.value.userName = "ankurpaul";
-        user.value.age += 10;
-      }, 2000);
     */
     const user = reactive({ userName: "nooocoder", age: 30 });
 
-    setTimeout(() => {
-      user.userName = "ankurpaul";
+    const setNewAge = () => {
       user.age += 10;
-    }, 2000);
+    };
 
     const userRef = toRefs(user);
-    console.log(userRef);
-    return { ...userRef };
+    return { ...userRef, helpers: { setNewAge } };
   },
   // data() {
   //   return {
   //     userName: "nooobcoder",
   //   };
+  // },
+  // methods: {
+  //   setNewAge() {
+  //     this.age += 10;
+  //   },
   // },
 };
 </script>
