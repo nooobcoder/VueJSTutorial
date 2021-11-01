@@ -1,19 +1,55 @@
 <template>
   <h2>My Course Goal</h2>
-  <!-- Task 1: Output your main course goal with help of the composition API -->
-  <!-- Don't hardcode it into the template, instead hardcode it into the JS code -->
   <h3>OUTPUT COURSE GOAL</h3>
-  <!-- Task 2: Toggle (show/ hide) the goal with help of the button  -->
-  <button>Toggle Goal</button>
-  <!-- Task 3: Manage data in three ways -->
-  <!-- => Separate refs -->
-  <!-- => Ref Object -->
-  <!-- => Reactive Object -->
-  <!-- Task 4: Also solve the assignment with the Options API -->
+
+  <!-- Options API -->
+  <!-- <div v-if="goalVisibility">
+    <p>{{ mainGoal }}</p>
+  </div>
+  <button @click.prevent="toggleVisibility">Toggle Goal</button> -->
+
+  <!-- Composition API -->
+  <div v-if="goalVisibility">
+    <p>{{ mainGoal }}</p>
+    <p>{{ mainGoalReactive }}</p>
+  </div>
+  <button @click.prevent="helpers.toggleVisibility">Toggle Goal</button>
 </template>
 
 <script>
-export default {};
+import { reactive, ref, toRefs } from "vue";
+
+export default {
+  setup() {
+    const goalVisibility = ref(true);
+    const mainGoal = ref("Understand the Composition API top to bottom");
+    const mainGoalReactiveObj = reactive({
+      mainGoalReactive: "(Reactive) Understand the Composition API",
+    });
+
+    const toggleVisibility = () =>
+      (goalVisibility.value = !goalVisibility.value);
+
+    return {
+      mainGoal,
+      ...toRefs(mainGoalReactiveObj),
+      goalVisibility,
+      helpers: { toggleVisibility },
+    };
+  },
+  /* data() {
+    return {
+      goalVisibility: true,
+      mainGoal: "Understand the Composition API top to bottom",
+    };
+  },
+  methods: {
+    toggleVisibility() {
+      console.log("here");
+      this.goalVisibility = !this.goalVisibility;
+    },
+  }, */
+};
 </script>
 
 <style>
