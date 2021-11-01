@@ -1,14 +1,16 @@
 <template>
   <section class="container">
-    <h2>{{ user.userName }}</h2>
-    <h3>{{ user.age }}</h3>
+    <h2>{{ userName }}</h2>
+    <h3>{{ age }}</h3>
   </section>
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive, toRefs } from "vue";
+
 export default {
   setup() {
+    // https://v3.vuejs.org/guide/composition-api-setup.html#usage-with-templates
     /* 
       const userName = ref('nooobcoder')
       const age = ref(30)
@@ -25,7 +27,9 @@ export default {
       user.age += 10;
     }, 2000);
 
-    return { user };
+    const userRef = toRefs(user);
+    console.log(userRef);
+    return { ...userRef };
   },
   // data() {
   //   return {
