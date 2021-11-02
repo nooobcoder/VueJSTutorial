@@ -16,8 +16,9 @@
         name="lastname"
         id="lastname"
         placeholder="Last Name"
-        v-model.trim="lastName"
+        ref="lastNameInput"
       />
+      <button @click.prevent="helpers.setLastName">Set Last Name</button>
     </div>
   </section>
 </template>
@@ -29,6 +30,7 @@ export default {
   setup() {
     const firstName = ref("");
     const lastName = ref("");
+    const lastNameInput = ref("");
     const uAge = ref(30);
 
     const getFullName = computed(() =>
@@ -43,11 +45,16 @@ export default {
       console.log(`Old Age: ${oldValue}\nNew Age: ${newValue}`)
     );
 
+    const setLastName = () => {
+      lastName.value = lastNameInput.value.value;
+    };
+
     return {
       firstName,
       lastName,
+      lastNameInput,
       age: uAge,
-      helpers: { setNewAge },
+      helpers: { setNewAge, setLastName },
       computed: { getFullName },
     };
   },
