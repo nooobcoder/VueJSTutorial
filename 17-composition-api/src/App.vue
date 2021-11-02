@@ -1,32 +1,35 @@
 <template>
   <section class="container">
-    <h2>{{ computed.getFullName }}</h2>
-    <h3>{{ age }}</h3>
+    <user-data :first-name="firstName" :last-name="lastName" />
     <button @click.prevent="helpers.setNewAge">Change Age</button>
-    <div>
-      <input
-        type="text"
-        name="firstname"
-        id="firstname"
-        placeholder="First Name"
-        v-model.trim="firstName"
-      />
-      <input
-        type="text"
-        name="lastname"
-        id="lastname"
-        placeholder="Last Name"
-        ref="lastNameInput"
-      />
-      <button @click.prevent="helpers.setLastName">Set Last Name</button>
-    </div>
+    <form @submit.prevent="helpers.setLastName">
+      <div>
+        <input
+          type="text"
+          name="firstname"
+          id="firstname"
+          placeholder="First Name"
+          v-model.trim="firstName"
+        />
+        <input
+          type="text"
+          name="lastname"
+          id="lastname"
+          placeholder="Last Name"
+          ref="lastNameInput"
+        />
+        <button @click.prevent="helpers.setLastName">Set Last Name</button>
+      </div>
+    </form>
   </section>
 </template>
 
 <script>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, provide } from "vue";
+import UserData from "./components/UserData.vue";
 
 export default {
+  components: { UserData },
   setup() {
     const firstName = ref("");
     const lastName = ref("");
@@ -48,6 +51,8 @@ export default {
     const setLastName = () => {
       lastName.value = lastNameInput.value.value;
     };
+
+    provide("userAge", uAge);
 
     return {
       firstName,
