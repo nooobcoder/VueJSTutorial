@@ -23,12 +23,13 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 export default {
   setup() {
     const firstName = ref("");
     const lastName = ref("");
+    const uAge = ref(30);
 
     const getFullName = computed(() =>
       firstName.value.length > 0 || lastName.value.length > 0
@@ -36,9 +37,17 @@ export default {
         : undefined
     );
 
+    const setNewAge = () => +(uAge.value += 10);
+    // watch([deps],(newValues,oldValues)=>{}) -> Overload for multiple dependencies
+    watch(uAge, (newValue, oldValue) =>
+      console.log(`Old Age: ${oldValue}\nNew Age: ${newValue}`)
+    );
+
     return {
       firstName,
       lastName,
+      age: uAge,
+      helpers: { setNewAge },
       computed: { getFullName },
     };
   },
