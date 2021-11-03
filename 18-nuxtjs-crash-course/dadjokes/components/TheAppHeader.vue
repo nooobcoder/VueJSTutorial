@@ -22,6 +22,10 @@ export default {}
 </script>
 
 <style>
+.nuxt-link-exact-active {
+  font-size: 20px;
+  font-weight: bolder;
+}
 .header {
   display: flex;
   background: #333;

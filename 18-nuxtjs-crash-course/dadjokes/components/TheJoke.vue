@@ -17,6 +17,10 @@ export default {
 </script>
 
 <style scoped>
+div:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 .joke {
   padding: 1rem;
   border: 1px dotted #ccc;
