@@ -1,6 +1,8 @@
 <template>
   <header class="header">
-    <h1 class="title">Dad Jokes</h1>
+    <nuxt-link to="/">
+      <h1 class="title">Dad Jokes</h1>
+    </nuxt-link>
     <ul>
       <li>
         <nuxt-link to="/">Home</nuxt-link>
@@ -22,6 +24,7 @@ export default {}
 <style>
 .header {
   display: flex;
+  background: #333;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;

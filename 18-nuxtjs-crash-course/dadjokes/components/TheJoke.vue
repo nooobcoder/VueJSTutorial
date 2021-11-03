@@ -1,6 +1,8 @@
 <template>
   <div class="joke">
-    <p>{{ joke }}</p>
+    <nuxt-link :to="`/jokes/${id}`">
+      <p>{{ joke }}</p>
+    </nuxt-link>
   </div>
 </template>
 
@@ -9,7 +11,7 @@ export default {
   name: 'TheJoke',
   props: {
     joke: { type: String, required: true },
-    id: { type: Number, required: true },
+    id: { type: String, required: true },
   },
 }
 </script>
