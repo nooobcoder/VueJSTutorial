@@ -3,16 +3,16 @@
     <!-- Error Handling -->
     <div
       v-if="errorMessage"
-      class="mb-10 p-4 rounded-md bg-light-grey shadow-lg"
+      class="mb-10 p-4 rounded-md bg-light-grey shadow-lg animate-pulse"
     >
-      <p class="text-red-500">{{ errorMEssage }}</p>
+      <p class="text-red-500">{{ errorMessage }}</p>
     </div>
 
     <!-- Registration Form -->
     <form
       action=""
       class="p-8 flex flex-col bg-light-grey rounded-md shadow-lg"
-      @submit.prevent=""
+      @submit.prevent="methods.registerUser"
     >
       <h1 class="text-3xl text-at-light-green mb-4">Register</h1>
       <div class="flex flex-col mb-2">
@@ -86,10 +86,13 @@
 
 <script>
 import { ref, reactive, toRefs } from "vue";
+import { supabase } from "../supabase/init";
+import { useRouter } from "vue-router";
 
 export default {
   name: "register",
   setup() {
+    const router = useRouter();
     // Create data / vars
     const userData = reactive({
       email: null,
@@ -100,8 +103,34 @@ export default {
     const errorMessage = ref(null);
 
     // Register function
-
-    return { errorMessage, email, password, confirmPassword };
+    const registerUser = async () => {
+      console.log("here");
+      if (password.value === confirmPassword.value) {
+        // Create the user using the supabase instance
+        try {
+          let { user, error } = await supabase.auth.signUp({
+            email: email.value,
+            password: password.value,
+          });
+          console.log(user);
+          if (error) throw error;
+          router.push({ name: "Login" });
+        } catch (error) {
+          errorMessage.value = error.message;
+          setTimeout(() => (errorMessage.value = null), 5000);
+        }
+      } else {
+        errorMessage.value = `Error: Passwords do not match!`;
+        setTimeout(() => (errorMessage.value = null), 5000);
+      }
+    };
+    return {
+      errorMessage,
+      email,
+      password,
+      confirmPassword,
+      methods: { registerUser },
+    };
   },
 };
 </script>

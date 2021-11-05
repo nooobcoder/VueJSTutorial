@@ -12,7 +12,7 @@
     <form
       action=""
       class="p-8 flex flex-col bg-light-grey rounded-md shadow-lg"
-      @submit.prevent=""
+      @submit.prevent="methods.loginUser"
     >
       <h1 class="text-3xl text-at-light-green mb-4">Register</h1>
       <div class="flex flex-col mb-2">
@@ -71,10 +71,12 @@
 
 <script>
 import { ref, reactive, toRefs } from "vue";
-
+import { supabase } from "../supabase/init";
+import { useRouter } from "vue-router";
 export default {
   name: "register",
   setup() {
+    const route = useRouter();
     // Create data / vars
     const userData = reactive({
       email: null,
@@ -83,9 +85,26 @@ export default {
     const { email, password } = toRefs(userData);
     const errorMessage = ref(null);
 
-    // Register function
+    // Login function
+    const loginUser = async () => {
+      try {
+        let { user, error } = await supabase.auth.signIn({
+          email: email.value,
+          password: password.value,
+        });
+        console.log(user, email.value);
+        if (error) throw error;
+        // Redirect the user to the homepage
+        route.replace({ name: "Home" });
+      } catch (error) {
+        errorMessage.value = error.message;
+        setTimeout(() => {
+          errorMessage.value = null;
+        }, 5000);
+      }
+    };
 
-    return { errorMessage, email, password };
+    return { errorMessage, email, password, methods: { loginUser } };
   },
 };
 </script>
