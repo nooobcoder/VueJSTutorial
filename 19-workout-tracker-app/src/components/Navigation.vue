@@ -14,12 +14,19 @@
       <ul class="flex flex-1 justify-end gap-x-10">
         <router-link class="cursor-pointer" :to="{ name: 'Home' }"
           >Home</router-link
-        ><router-link class="cursor-pointer" :to="{ name: '' }"
+        ><router-link class="cursor-pointer" v-if="user" :to="{ name: '' }"
           >Create</router-link
-        ><router-link class="cursor-pointer" :to="{ name: 'Login' }"
+        ><router-link
+          v-if="!user"
+          class="cursor-pointer"
+          :to="{ name: 'Login' }"
           >Login</router-link
         >
-        <li class="cursor-pointer" @click.prevent="methods.logoutUser">
+        <li
+          class="cursor-pointer"
+          v-if="user"
+          @click.prevent="methods.logoutUser"
+        >
           Logout
         </li>
       </ul>
@@ -30,11 +37,12 @@
 <script>
 import { supabase } from "../supabase/init";
 import { useRouter } from "vue-router";
+import store from "../store/index";
 
 export default {
   setup() {
     // Get user from store
-
+    let user = store.getters.getUser;
     // Setup ref to router
     const router = useRouter();
 
@@ -46,13 +54,14 @@ export default {
         if (error) {
           throw error;
         }
-        router.push({ name: "Home" });
+        router.go();
       } catch (error) {
         // Handle Error
+        console.error(error);
       }
     };
 
-    return { methods: { logoutUser } };
+    return { user, methods: { logoutUser } };
   },
 };
 </script>

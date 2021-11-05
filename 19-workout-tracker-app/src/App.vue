@@ -20,6 +20,7 @@ export default {
 
     // Check to see if user is already logged in
     const user = supabase.auth.user();
+    store.dispatch("setUser", user);
 
     // If user does not exist, need to make app ready
     if (!user) {
@@ -28,8 +29,7 @@ export default {
 
     // Runs when there is a auth state change
     // if user is logged in, this will fire
-    supabase.auth.onAuthStateChange((_, session) => {
-      console.log("Auth State Change");
+    supabase.auth.onAuthStateChange((event, session) => {
       store.dispatch("setUser", session);
       appReady.value = true;
     });

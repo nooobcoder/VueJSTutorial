@@ -10,7 +10,6 @@ const store = new Store({
   mutations: {
     setUser(state, payload) {
       state.user = payload ? payload.user : null;
-      console.log(state.user);
     },
   },
   actions: {

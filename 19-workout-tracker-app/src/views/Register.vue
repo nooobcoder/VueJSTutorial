@@ -104,15 +104,13 @@ export default {
 
     // Register function
     const registerUser = async () => {
-      console.log("here");
       if (password.value === confirmPassword.value) {
         // Create the user using the supabase instance
         try {
-          let { user, error } = await supabase.auth.signUp({
+          let { error } = await supabase.auth.signUp({
             email: email.value,
             password: password.value,
           });
-          console.log(user);
           if (error) throw error;
           router.push({ name: "Login" });
         } catch (error) {

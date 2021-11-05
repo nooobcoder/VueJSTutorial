@@ -5,7 +5,7 @@
       v-if="errorMessage"
       class="mb-10 p-4 rounded-md bg-light-grey shadow-lg"
     >
-      <p class="text-red-500">{{ errorMEssage }}</p>
+      <p class="text-red-500">{{ errorMessage }}</p>
     </div>
 
     <!-- Login Form -->
@@ -14,7 +14,7 @@
       class="p-8 flex flex-col bg-light-grey rounded-md shadow-lg"
       @submit.prevent="methods.loginUser"
     >
-      <h1 class="text-3xl text-at-light-green mb-4">Register</h1>
+      <h1 class="text-3xl text-at-light-green mb-4">Login</h1>
       <div class="flex flex-col mb-2">
         <label for="email" class="mb-1 text-sm text-at-light-green">
           Email Address
@@ -73,10 +73,14 @@
 import { ref, reactive, toRefs } from "vue";
 import { supabase } from "../supabase/init";
 import { useRouter } from "vue-router";
+import store from "../store/index";
+
 export default {
   name: "register",
   setup() {
-    const route = useRouter();
+    const router = useRouter();
+    let user = store.getters.getUser;
+    if (user) router.replace("/");
     // Create data / vars
     const userData = reactive({
       email: null,
@@ -92,10 +96,10 @@ export default {
           email: email.value,
           password: password.value,
         });
-        console.log(user, email.value);
+        store.dispatch("setUser", user);
         if (error) throw error;
         // Redirect the user to the homepage
-        route.replace({ name: "Home" });
+        router.replace({ name: "Home" });
       } catch (error) {
         errorMessage.value = error.message;
         setTimeout(() => {
