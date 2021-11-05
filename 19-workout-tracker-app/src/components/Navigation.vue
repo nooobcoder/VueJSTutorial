@@ -19,22 +19,40 @@
         ><router-link class="cursor-pointer" :to="{ name: 'Login' }"
           >Login</router-link
         >
-        <li class="cursor-pointer">Logout</li>
+        <li class="cursor-pointer" @click.prevent="methods.logoutUser">
+          Logout
+        </li>
       </ul>
     </nav>
   </header>
 </template>
 
 <script>
+import { supabase } from "../supabase/init";
+import { useRouter } from "vue-router";
+
 export default {
   setup() {
     // Get user from store
 
     // Setup ref to router
+    const router = useRouter();
 
     // Logout function
+    const logoutUser = async () => {
+      try {
+        let { error } = await supabase.auth.signOut();
 
-    return {};
+        if (error) {
+          throw error;
+        }
+        router.push({ name: "Home" });
+      } catch (error) {
+        // Handle Error
+      }
+    };
+
+    return { methods: { logoutUser } };
   },
 };
 </script>

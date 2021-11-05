@@ -9,8 +9,8 @@ const store = new Store({
   },
   mutations: {
     setUser(state, payload) {
-      console.log(payload);
       state.user = payload ? payload.user : null;
+      console.log(state.user);
     },
   },
   actions: {
