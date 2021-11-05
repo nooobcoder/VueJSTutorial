@@ -1,7 +1,6 @@
 <template>
   <div v-if="appReady" class="min-h-full font-Poppins box-border">
     <the-navigation />
-    <p>Render this</p>
     <router-view />
   </div>
 </template>

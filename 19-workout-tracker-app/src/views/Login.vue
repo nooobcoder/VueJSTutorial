@@ -76,7 +76,7 @@ import { useRouter } from "vue-router";
 import store from "../store/index";
 
 export default {
-  name: "register",
+  name: "login",
   setup() {
     const router = useRouter();
     let user = store.getters.getUser;
