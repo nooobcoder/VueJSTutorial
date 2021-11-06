@@ -1,0 +1,47 @@
+ <router-link
+        class="
+          flex flex-col
+          items-center
+          bg-light-grey
+          p-8
+          shadow-md
+          cursor-pointer
+        "
+        :to="{ name: 'View-Workout', params: { workoutId: workout.id } }"
+        v-for="(workout, index) in data"
+        :key="index"
+      >
+        <!-- Cardio Img -->
+        <img
+          v-if="workout.workoutType === 'cardio'"
+          src="@/assets/images/running-light-green.png"
+          class="h-24 w-auto"
+          alt=""
+        />
+
+        <!-- Strength Training -->
+        <img
+          v-else
+          src="@/assets/images/dumbbell-light-green.png"
+          class="h-24 w-auto"
+          alt=""
+        />
+
+        <p
+          class="
+            mt-6
+            py-1
+            px-3
+            text-xs text-white
+            bg-at-light-green
+            shadow-md
+            rounded-lg
+          "
+        >
+          {{ workout.workoutType }}
+        </p>
+
+        <h1 class="mt-8 mb-2 text-center text-xl text-at-light-green">
+          {{ workout.workoutName }}
+        </h1>
+      </router-link>
