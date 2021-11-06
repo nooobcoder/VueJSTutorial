@@ -372,7 +372,6 @@ export default {
 
         dataStore.data = workoutData[0];
         dataStore.dataLoaded = true;
-        console.log(dataStore.data);
       } catch ({ message }) {
         errorMessage.value = message;
         setTimeout(() => {
