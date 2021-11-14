@@ -3,7 +3,7 @@
     <div v-if="!mobile" class="app flex flex-column">
       <navigation />
       <div class="app-content flex flex-column">
-        <invoice-modal />
+        <invoice-modal v-if="invoiceModal" />
         <router-view />
       </div>
     </div>
@@ -17,7 +17,8 @@
 <script>
 import Navigation from "./components/Navigation.vue";
 import InvoiceModal from "./components/InvoiceModal";
-import { ref } from "vue";
+import { useStore } from "vuex";
+import { ref, watch } from "vue";
 
 export default {
   components: {
@@ -26,6 +27,16 @@ export default {
   },
   setup() {
     const mobile = ref(null);
+    // Access the vuex store
+    const store = useStore();
+    const model = store.state;
+    const invoiceModal = ref(model.invoiceModal);
+
+    watch(store.state, (newVal) => {
+      console.log(newVal);
+      invoiceModal.value = newVal.invoiceModal;
+      console.log(invoiceModal);
+    });
 
     const checkScreen = () => {
       const windowWidth = window.innerWidth;
@@ -36,7 +47,7 @@ export default {
     checkScreen();
     window.addEventListener("resize", checkScreen);
 
-    return { mobile };
+    return { mobile, invoiceModal };
   },
 };
 </script>

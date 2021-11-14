@@ -171,7 +171,7 @@
       <!-- Save/Exit -->
       <div class="save flex">
         <div class="left">
-          <button type="button" @click="closeInvoice" class="red">
+          <button type="button" @click="methods.closeInvoice" class="red">
             Cancel
           </button>
         </div>
@@ -203,10 +203,14 @@
 
 <script>
 import { reactive, toRefs } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "invoiceModal",
   setup() {
+    // Access the vuex store
+    const store = useStore();
+
     const databaseSchema = reactive({
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
       docId: null,
@@ -234,7 +238,11 @@ export default {
     });
     const databaseSchemaRef = toRefs(databaseSchema);
 
-    return { databaseSchemaRef };
+    const closeInvoice = () => {
+      store.commit("TOGGLE_INVOICE");
+    };
+
+    return { databaseSchemaRef, methods: { closeInvoice } };
   },
 };
 </script>
