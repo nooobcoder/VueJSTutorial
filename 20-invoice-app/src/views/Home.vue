@@ -9,7 +9,7 @@
       <div class="right flex">
         <div class="filter flex" @click="toggleFilterMenu">
           <span>Filter by status</span>
-          <img src="@/assets/icon-arrow-down.svg" alt="">
+          <img src="@/assets/icon-arrow-down.svg" alt="" />
           <ul class="filter-menu" v-show="filterMenu">
             <li>Draft</li>
             <li>Pending</li>
@@ -19,7 +19,7 @@
         </div>
         <div class="button flex" @click="newInvoice">
           <div class="inner-button flex">
-            <img src="@/assets/icon-plus.svg" alt="">
+            <img src="@/assets/icon-plus.svg" alt="" />
           </div>
           <span>New Invoice</span>
         </div>
@@ -37,8 +37,7 @@ export default {
     const filterMenu = ref(null);
 
     // Methods
-    const newInvoice = () => {
-    };
+    const newInvoice = () => {};
     const toggleFilterMenu = () => {
       filterMenu.value = !filterMenu.value;
     };
@@ -90,7 +89,8 @@ export default {
           top: 25px;
           list-style: none;
           background-color: #1e2139;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
           li {
             cursor: pointer;
