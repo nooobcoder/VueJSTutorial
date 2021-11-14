@@ -3,6 +3,7 @@
     <div v-if="!mobile" class="app flex flex-column">
       <navigation />
       <div class="app-content flex flex-column">
+        <invoice-modal/>
         <router-view />
       </div>
     </div>
@@ -15,11 +16,13 @@
 
 <script>
 import Navigation from "./components/Navigation.vue";
+import InvoiceModal from "./components/InvoiceModal";
 import { ref } from "vue";
 
 export default {
   components: {
     Navigation,
+    InvoiceModal,
   },
   setup() {
     const mobile = ref(null);
