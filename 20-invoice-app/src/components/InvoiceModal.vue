@@ -138,7 +138,7 @@
               <th class="item-name">Item Name</th>
               <th class="qty">Qty</th>
               <th class="price">Price</th>
-              <th class="total">Toal</th>
+              <th class="total">Total</th>
             </tr>
             <tr
               class="table-items flex"
@@ -154,14 +154,14 @@
                 ${{ (item.total = item.qty * item.price) }}
               </td>
               <img
-                @click="deleteInvoiceItem(item.id)"
+                @click="methods.deleteInvoiceItem(item.id)"
                 src="@/assets/icon-delete.svg"
                 alt=""
               />
             </tr>
           </table>
 
-          <div @click="addNewInvoiceItem" class="flex button">
+          <div @click="methods.addNewInvoiceItem" class="flex button">
             <img src="@/assets/icon-plus.svg" alt="" />
             Add New Item
           </div>
@@ -204,6 +204,7 @@
 <script>
 import { reactive, toRefs, watch } from "vue";
 import { useStore } from "vuex";
+import { uid } from "uid";
 
 // Get current date for invoice date field
 const getCurrentDate = (dateOptions) => {
@@ -252,6 +253,7 @@ export default {
     databaseSchema.invoiceDateUnix = currentDate.unixDate;
     databaseSchema.invoiceDate = currentDate.invoiceDate;
 
+    // Update the payment due date by watching the paymentTerms prop
     watch(databaseSchemaRef.paymentTerms, (newVal) => {
       const futureDate = new Date();
       databaseSchema.paymentDueDateUnix = futureDate.setDate(
@@ -266,7 +268,26 @@ export default {
       store.commit("TOGGLE_INVOICE");
     };
 
-    return { ...toRefs(databaseSchema), methods: { closeInvoice } };
+    const addNewInvoiceItem = () => {
+      databaseSchema.invoiceItemList.push({
+        id: uid(),
+        itemName: "",
+        qty: "",
+        price: 0,
+        total: 0,
+      });
+    };
+
+    const deleteInvoiceItem = (id) => {
+      databaseSchema.invoiceItemList = databaseSchema.invoiceItemList.filter(
+        (item) => item.id !== id,
+      );
+    };
+
+    return {
+      ...toRefs(databaseSchema),
+      methods: { closeInvoice, addNewInvoiceItem, deleteInvoiceItem },
+    };
   },
 };
 </script>
