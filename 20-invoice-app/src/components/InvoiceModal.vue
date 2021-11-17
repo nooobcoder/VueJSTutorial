@@ -4,7 +4,7 @@
     ref="invoiceWrap"
     class="invoice-wrap flex flex-column"
   >
-    <form @submit.prevent="submitForm" class="invoice-content">
+    <form @submit.prevent="methods.submitForm" class="invoice-content">
       <Loading v-show="loading" />
       <h1 v-if="!editInvoice">New Invoice</h1>
       <h1 v-else>Edit Invoice</h1>
@@ -179,7 +179,7 @@
           <button
             v-if="!editInvoice"
             type="submit"
-            @click="saveDraft"
+            @click="methods.saveDraft"
             class="dark-purple"
           >
             Save Draft
@@ -187,7 +187,7 @@
           <button
             v-if="!editInvoice"
             type="submit"
-            @click="publishInvoice"
+            @click="methods.publishInvoice"
             class="purple"
           >
             Create Invoice
@@ -205,6 +205,8 @@
 import { reactive, toRefs, watch } from "vue";
 import { useStore } from "vuex";
 import { uid } from "uid";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseinit";
 
 // Get current date for invoice date field
 const getCurrentDate = (dateOptions) => {
@@ -284,9 +286,76 @@ export default {
       );
     };
 
+    const publishInvoice = () => {
+      databaseSchema.invoicePending = true;
+    };
+
+    const saveDraft = () => {
+      databaseSchema.invoiceDraft = true;
+    };
+
+    const calInvoiceTotal = () => {
+      databaseSchema.invoiceTotal = 0;
+      databaseSchema.invoiceItemList.forEach((item) => {
+        databaseSchema.invoiceTotal += item.total;
+      });
+    };
+
+    const uploadInvoice = async () => {
+      if (databaseSchema.invoiceItemList.length <= 0) {
+        alert("Please ensure you fill out work items!");
+        return;
+      }
+      calInvoiceTotal();
+
+      try {
+        const upPayload = {
+          invoiceId: uid(6),
+          billerStreetAddress: databaseSchema.billerStreetAddress,
+          billerCity: databaseSchema.billerCity,
+          billerZipCode: databaseSchema.billerZipCode,
+          billerCountry: databaseSchema.billerCountry,
+          clientName: databaseSchema.clientName,
+          clientEmail: databaseSchema.clientEmail,
+          clientStreetAddress: databaseSchema.clientStreetAddress,
+          clientCity: databaseSchema.clientCity,
+          clientZipCode: databaseSchema.clientZipCode,
+          clientCountry: databaseSchema.clientCountry,
+          invoiceDate: databaseSchema.invoiceDate,
+          invoiceDateUnix: databaseSchema.invoiceDateUnix,
+          paymentTerms: databaseSchema.paymentTerms,
+          paymentDueDate: databaseSchema.paymentDueDate,
+          paymentDueDateUnix: databaseSchema.paymentDueDateUnix,
+          productDescription: databaseSchema.productDescription,
+          invoiceItemList: databaseSchema.invoiceItemList,
+          invoiceTotal: databaseSchema.invoiceTotal,
+          invoicePending: databaseSchema.invoicePending,
+          invoiceDraft: databaseSchema.invoiceDraft,
+          invoicePaid: null,
+        };
+        // Upload the snapshot to the firestore database
+        await addDoc(collection(db, "invoices"), upPayload);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+
+      store.commit("TOGGLE_INVOICE");
+    };
+
+    const submitForm = () => {
+      uploadInvoice();
+    };
+
     return {
       ...toRefs(databaseSchema),
-      methods: { closeInvoice, addNewInvoiceItem, deleteInvoiceItem },
+      methods: {
+        closeInvoice,
+        addNewInvoiceItem,
+        deleteInvoiceItem,
+        saveDraft,
+        publishInvoice,
+        submitForm,
+      },
     };
   },
 };
