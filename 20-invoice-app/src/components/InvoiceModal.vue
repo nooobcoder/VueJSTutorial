@@ -202,8 +202,19 @@
 </template>
 
 <script>
-import { reactive, toRefs } from "vue";
+import { reactive, toRefs, watch } from "vue";
 import { useStore } from "vuex";
+
+// Get current date for invoice date field
+const getCurrentDate = (dateOptions) => {
+  const unixDate = Date.now();
+  const invoiceDate = new Date(unixDate).toLocaleDateString(
+    "en-us",
+    dateOptions,
+  );
+
+  return { unixDate, invoiceDate };
+};
 
 export default {
   name: "invoiceModal",
@@ -237,12 +248,25 @@ export default {
       invoiceTotal: 0,
     });
     const databaseSchemaRef = toRefs(databaseSchema);
+    const currentDate = getCurrentDate(databaseSchema.dateOptions);
+    databaseSchema.invoiceDateUnix = currentDate.unixDate;
+    databaseSchema.invoiceDate = currentDate.invoiceDate;
+
+    watch(databaseSchemaRef.paymentTerms, (newVal) => {
+      const futureDate = new Date();
+      databaseSchema.paymentDueDateUnix = futureDate.setDate(
+        futureDate.getDate() + parseInt(newVal),
+      );
+      databaseSchema.paymentDueDate = new Date(
+        databaseSchema.paymentDueDateUnix,
+      ).toLocaleDateString("en-us", databaseSchema.dateOptions);
+    });
 
     const closeInvoice = () => {
       store.commit("TOGGLE_INVOICE");
     };
 
-    return { databaseSchemaRef, methods: { closeInvoice } };
+    return { ...toRefs(databaseSchema), methods: { closeInvoice } };
   },
 };
 </script>
