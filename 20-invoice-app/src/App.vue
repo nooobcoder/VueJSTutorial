@@ -1,53 +1,57 @@
 <template>
-  <div>
+  <div v-if="invoicesLoaded">
     <div v-if="!mobile" class="app flex flex-column">
-      <navigation />
+      <Navigation />
       <div class="app-content flex flex-column">
+        <Modal v-if="modalActive" />
         <transition name="invoice">
-          <invoice-modal v-if="invoiceModal" />
+          <InvoiceModal v-if="invoiceModal" />
         </transition>
         <router-view />
       </div>
     </div>
     <div v-else class="mobile-message flex flex-column">
-      <h2>Sorry! This app is not compatible with mobile devices.</h2>
-      <p>To use this app, please view it on a Desktop/PC</p>
+      <h2>Sorry, this app is not supported on Mobile Devices</h2>
+      <p>To use this app, please use a computer or Tablet</p>
     </div>
   </div>
 </template>
 
 <script>
-import Navigation from "./components/Navigation.vue";
+import { mapState, mapActions } from "vuex";
+import Navigation from "./components/Navigation";
 import InvoiceModal from "./components/InvoiceModal";
-import { useStore } from "vuex";
-import { ref, watch } from "vue";
-
+import Modal from "./components/Modal";
 export default {
+  data() {
+    return {
+      mobile: null,
+    };
+  },
   components: {
     Navigation,
     InvoiceModal,
+    Modal,
   },
-  setup() {
-    const mobile = ref(null);
-    // Access the vuex store
-    const store = useStore();
-    const model = store.state;
-    const invoiceModal = ref(model.invoiceModal);
+  created() {
+    this.GET_INVOICES();
+    this.checkScreen();
+    window.addEventListener("resize", this.checkScreen);
+  },
+  methods: {
+    ...mapActions(["GET_INVOICES"]),
 
-    watch(store.state, (newVal) => {
-      invoiceModal.value = newVal.invoiceModal;
-    });
-
-    const checkScreen = () => {
+    checkScreen() {
       const windowWidth = window.innerWidth;
-      mobile.value = windowWidth <= 750;
-    };
-
-    // On created
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-
-    return { mobile, invoiceModal };
+      if (windowWidth <= 750) {
+        this.mobile = true;
+        return;
+      }
+      this.mobile = false;
+    },
+  },
+  computed: {
+    ...mapState(["invoiceModal", "modalActive", "invoicesLoaded"]),
   },
 };
 </script>
@@ -90,6 +94,7 @@ export default {
 }
 
 // animated invoice
+
 .invoice-enter-active,
 .invoice-leave-active {
   transition: 0.8s ease all;
@@ -167,7 +172,6 @@ button,
     border-radius: 50%;
     margin-right: 8px;
   }
-
   font-size: 12px;
   margin-right: 30px;
   align-items: center;
@@ -179,7 +183,6 @@ button,
   &::before {
     background-color: #33d69f;
   }
-
   color: #33d69f;
   background-color: rgba(51, 214, 160, 0.1);
 }
@@ -188,7 +191,6 @@ button,
   &::before {
     background-color: #ff8f00;
   }
-
   color: #ff8f00;
   background-color: rgba(255, 145, 0, 0.1);
 }
@@ -197,7 +199,6 @@ button,
   &::before {
     background-color: #dfe3fa;
   }
-
   color: #dfe3fa;
   background-color: rgba(223, 227, 250, 0.1);
 }
